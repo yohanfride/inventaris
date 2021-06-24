@@ -1,0 +1,112 @@
+<html>
+<head>
+    <title>Html-Qrcode Demo</title>
+<body>
+    <div id="qr-reader" style="width:500px"></div>
+    <div id="qr-reader-results"></div>
+    <br/>
+    <br/>
+    <select id="camera">
+        <option value="#">kamera tidak terdeteksi</option>
+    </select>
+    <br/>
+    <br/>
+    <button id="start" >Start</button>&nbsp;&nbsp;&nbsp;
+    <button id="stop" >Stop</button>
+    <br/>
+    <br/>
+    <label> KK ID : <span id="kk_id"></span></label>
+    <br/>
+    <label> Amplop : <span id="no_amplop"></span></label>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script src="html5-qrcode.min.js"></script>
+<script>
+    function docReady(fn) {
+        // see if DOM is already available
+        if (document.readyState === "complete"
+            || document.readyState === "interactive") {
+            // call on next available tick
+            setTimeout(fn, 1);
+        } else {
+            document.addEventListener("DOMContentLoaded", fn);
+        }
+    }
+
+    docReady(function () {
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        function start(cameraId){
+            html5QrCode.start(cameraId,{
+                fps: 10,qrbox: 250
+            },qrCodeMessage => {
+                var myarr = qrCodeMessage.split('.');
+                $("#kk_id").html(myarr[0]+"."+myarr[1]);
+                $("#no_amplop").html(myarr[2]);
+
+            },errorMessage => {
+            }).catch(err => {
+            });
+        }
+
+        function stop(){
+            html5QrCode.stop().then(ignore => {
+              console.log("QR Code scanning stopped.");
+            }).catch(err => { 
+              console.log("Unable to stop scanning.");
+            });
+        }
+
+        Html5Qrcode.getCameras().then(devices => {
+            console.log(devices); ///Camera ID   
+            var listcamera = "";             
+            if (devices && devices.length) {
+                for(i=0; i<devices.length; i++){
+                    listcamera+='<option value="'+devices[i].id+'">'+devices[i].label+'</option>';
+                }
+                $("#camera").html(listcamera);
+                var cameraId = devices[0].id;   
+                start(cameraId);            
+            }
+        }).catch(err => {
+            console.log(err);  
+        });
+
+        $("#stop").click(function(){
+            stop();
+        });
+
+        $("#start").click(function(){
+            stop();
+            var cameraId = $("#camera").val();
+            start(cameraId);
+        });
+
+
+        // var html5QrcodeScanner = new Html5QrcodeScanner(
+        //     "qr-reader-results", { fps: 10, qrbox: 250 });
+
+        // function onScanSuccess(qrCodeMessage) {
+        //     // handle on success condition with the decoded message
+        //     html5QrcodeScanner.clear();
+        //     // ^ this will stop the scanner (video feed) and clear the scan area.
+        // }
+        // html5QrcodeScanner.render(onScanSuccess);
+
+        // var resultContainer = document.getElementById('qr-reader-results');
+        // var lastResult, countResults = 0;
+        // function onScanSuccess(qrCodeMessage) {
+        //     if (qrCodeMessage !== lastResult) {
+        //         ++countResults;
+        //         lastResult = qrCodeMessage;
+        //         resultContainer.innerHTML
+        //             += `<div>[${countResults}] - ${qrCodeMessage}</div>`;
+        //     }
+        // }
+
+        // var html5QrcodeScanner = new Html5QrcodeScanner(
+        //     "qr-reader", { fps: 10, qrbox: 250 });
+        // html5QrcodeScanner.render(onScanSuccess);
+    });
+</script>
+</head>
+</html>
