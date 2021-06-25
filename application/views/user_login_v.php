@@ -78,7 +78,7 @@
 
           </div>
         </div>
-        <div class="col-lg-8 col-12 order-lg-2 order-1 min-vh-100 background-walk-y position-relative overlay-gradient-bottom" data-background="<?= base_url()?>assets/img/sda.jpg">
+        <div class="col-lg-8 col-12 order-lg-2 order-1 min-vh-100 background-walk-y position-relative overlay-gradient-bottom" data-background="<?= base_url()?>assets/img/SDA.jpg">
           <div class="absolute-bottom-left index-2">
             <div class="text-light p-5 pb-5">
               <div class="mb-2 pb-3">
